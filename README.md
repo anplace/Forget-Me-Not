@@ -13,3 +13,8 @@ To assist a small business owner with writing and saving notes so they can bette
 
 Site as of 03/07/2024:
 ![Picture of the Note Taker App with two test notes already entered.](image.png)
+
+### Credits
+
+@PedroTech's Youtube account to help with deploying to Heroku
+@jhf1203's Youtube account for helping with the code within the server.js file
