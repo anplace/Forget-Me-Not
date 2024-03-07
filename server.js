@@ -1,42 +1,78 @@
+//Establishing the dependencies
 const express = require('express');
-const bodyParser = require('body-parser');
+const path = require('path');
+const fs = require('fs');
+const util = require('util');
 
+//Setting the asynchronous processes
+const readFileAsync = util.promisify(fs.readFile);
+const writeFileAsync = util.promisify(fs.writeFile);
+
+//Setting up the express server
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Array to hold notes
+
+//Setting up the static Middleware
+app.use(express.static('public'));
 
 
-// Middleware 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  next();
+// Setting up the API routes
+
+//GET route
+app.get("/api/notes", (req, res) => {
+  readFileAsync("./db/db.json", "utf8").then((data) => {
+    notes = [].concat(JSON.parse(data))
+    res.json(notes);
+  })
 });
 
-// Route to get all notes
-app.get('/api/notes', (req, res) => {
-  res.json(notes);
-});
 
-// Route to save a new note
-app.post('/api/notes', (req, res) => {
+//POST route
+app.post("/api/notes", (req, res) => {
   const newNote = req.body;
-  notes.push(newNote);
-  res.status(201).json(newNote);
+  readFileAsync("./db/db.json", "utf8").then((data) => {
+    const notes = [].concat(JSON.parse(data));
+    newNote.id = notes.length + 1;
+    notes.push(newNote);
+    return notes;
+  }).then((notes) => {
+    writeFileAsync("./db/db.json", JSON.stringify(notes))
+    res.json(newNote);
+  })
 });
 
-// Route to delete a note by ID
-app.delete('/api/notes/:id', (req, res) => {
-  const noteId = req.params.id;
-  notes = notes.filter(note => note.id !== noteId);
-  res.sendStatus(204);
+//DELETE route
+app.delete("/api/notes/:id", (req, res) => {
+  const deleteId = req.params.id;
+  readFileAsync("./db/db.json", "utf8").then((data) => {
+    const notes = [].concat(JSON.parse(data));
+    const newNotesData = notes.filter((note) => note.id != deleteId);
+    return newNotesData;
+  }).then((notes) => {
+    writeFileAsync("./db/db.json", JSON.stringify(notes))
+    res.json(notes);
+  })
 });
 
-// Start the server
+//Routes to the HTML pages
+app.get("/notes", (req, res) => {
+  res.sendFile(path.join(__dirname, "./public/notes.html"));
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "./public/index.html"));
+});
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "./public/index.html"));
+});
+
+
+//Starting the server, use nodemon server.js to start the server
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
