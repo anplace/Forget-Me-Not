@@ -9,7 +9,7 @@ To assist a small business owner with writing and saving notes so they can bette
 
 [Link to my Github repository](https://github.com/anplace/Forget-Me-Not)
 
-[Link to the deployed site](https://anplace.github.io/Alex-Place-Personal-Bio-Website/)
+[Link to the deployed site](https://forget-me-not-place-2d106e252ec9.herokuapp.com/)
 
-Site as of 11/06/2023:
-![image](https://github.com/anplace/Personal-Bio-Website/assets/144726483/a469beb6-4d38-4601-a1d3-ae1ebc7df05d)
+Site as of 03/07/2024:
+![Picture of the Note Taker App with two test notes already entered.](image.png)
